@@ -1,4 +1,4 @@
-from classes.CsvReader import CsvReader
+from src.classes.CsvReader import CsvReader
 
 
 def most_ordered(data, person):
