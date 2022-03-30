@@ -2,14 +2,36 @@ class TrackOrders:
     def __init__(self):
         self.orders = []
         self.dishes = set()
+        self.working_days = set()
+        self.days_counter = {}
+        self.busiest_day_counter = 0
+        self.busiest_day = ""
+        self.least_busy_day_counter = 999
+        self.least_busy_day = ""
 
     # aqui deve expor a quantidade de estoque
     def __len__(self):
         return len(self.orders)
 
+    def count_day(self, day):
+        self.working_days.add(day)
+        if day not in self.days_counter:
+            self.days_counter[day] = 1
+        else:
+            self.days_counter[day] += 1
+
+        if self.days_counter[day] >= self.busiest_day_counter:
+            self.busiest_day_counter = self.days_counter[day]
+            self.busiest_day = day
+
+        if self.days_counter[day] <= self.least_busy_day_counter:
+            self.least_busy_day_counter = self.days_counter[day]
+            self.least_busy_day = day
+
     def add_new_order(self, customer, order, day):
         self.orders.append({"customer": customer, "order": order, "day": day})
         self.dishes.add(order)
+        self.count_day(day)
 
     def get_most_ordered_dish_per_customer(self, customer):
         ordered_dishes = {}
@@ -34,10 +56,14 @@ class TrackOrders:
         return self.dishes.difference(ordered_dishes)
 
     def get_days_never_visited_per_customer(self, customer):
-        pass
+        went_days = set()
+        for order in self.orders:
+            if order["customer"] == customer:
+                went_days.add(order["day"])
+        return self.working_days.difference(went_days)
 
     def get_busiest_day(self):
-        pass
+        return self.busiest_day
 
     def get_least_busy_day(self):
-        pass
+        return self.least_busy_day
