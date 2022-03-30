@@ -41,18 +41,24 @@ def days_never_went(data, person):
     return all_days.difference(person_went_days)
 
 
+def save_file(data, path_name):
+    with open(path_name, mode='w') as file:
+        for row in data:
+            file.write(f'{row}\n')
+
+
 def analyze_log(path_to_file):
     restaurant_data = CsvReader.read_file(path_to_file)
     maria_info = most_ordered(restaurant_data, 'maria')
     arnaldo_info = most_ordered(restaurant_data, 'arnaldo')
 
-    print(maria_info[0])
-    print(arnaldo_info[1]['hamburguer'])
-    print(dishes_never_ordered(restaurant_data, 'joao'))
-    print(days_never_went(restaurant_data, 'joao'))
+    maria_most_ordered = maria_info[0]
+    arnaldo_hamburger_orders = str(arnaldo_info[1]['hamburguer'])
+    joao_never_ordered = str(dishes_never_ordered(restaurant_data, 'joao'))
+    joao_never_went = str(days_never_went(restaurant_data, 'joao'))
 
-
-path = 'data/orders_1.csv'
-
-
-analyze_log(path)
+    save_file(
+        [maria_most_ordered, arnaldo_hamburger_orders,
+         joao_never_ordered, joao_never_went],
+        'data/mkt_campaign.txt'
+    )
